@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "mystudent.h"
+#include "student.h"
 
 void Record_results();
 
@@ -128,7 +128,7 @@ int main(int argc, char const *argv[])
             //strcpy(filename, student.RegNo);
             FILE *pfile = fopen(strcat(student.RegNo, ".dat"), "w");
             if (pfile == NULL){
-                printf("\nError creating account!");
+                printf("\nError creating SStudents account!");
                 //fclose(pfile);
                 goto studentlabel;
             }
@@ -162,7 +162,7 @@ int main(int argc, char const *argv[])
             if(strcmp(student.student_passwd, pwd) !=0){
                 printf("\nWRONG PASSWORD!\n...try again..\n");
                 fclose(pfile);
-                goto label1;
+                goto studentlabel;
             }
 
             fclose(pfile);
