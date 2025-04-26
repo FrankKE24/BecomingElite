@@ -1,0 +1,3 @@
+I created this repo to back up my WSL data.
+It contains my C progrsmming projects as  I aim to Reach the summit. Fisrt project is the School Database, Second is the Bank Management System....
+I will keep on working and commiting more abd more projects as time goes by
