@@ -3,7 +3,13 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "records2.h"
+//To be found out:
+//Why regNo is the filename
+//why password won't update for student side
+
+
+#include "student Side/records2.h"
+#include "student Side/mystudent.c"
 
 void View_records();
 void Search_record();
@@ -13,11 +19,12 @@ void Edit_record();
 
 char  reg[12], filename[17];
 int entries;
+char menu_choice[2];
 
 int main(int argc, char const *argv[])
 {
-    struct Lecturer lec1;
     //struct Student mystudents;
+    
 
     int choiceA;
     char name[14], pwd[12];
@@ -84,11 +91,27 @@ int main(int argc, char const *argv[])
             }
 
             fread(&lec1, sizeof(struct Lecturer), 1, ptrfile);
-            if(strcmp(pwd, lec1.passkey) != 0){
-                printf("\nWrong Pasword....\n.....-TRY AGAIN-.....");
-                fclose(ptrfile);
-                goto stafflabel;
-            }
+            int attempts = 0;
+            do
+            {
+                system("clear");
+                if(strcmp(pwd, lec1.passkey) != 0){
+                    printf("\nWrong Pasword....\n.....-TRY AGAIN-.....\n");
+                    printf("Password: ");
+                    scanf("%11s", pwd);
+                    //fclose(ptrfile);
+                    //goto stafflabel;
+                }
+                attempts++;
+                if(attempts == 4){
+                    puts("Too many attempts!");
+                    puts("Account locked");
+                    
+                    goto label1;
+                }
+            } while (strcmp(pwd, lec1.passkey) != 0);
+            
+
             fclose(ptrfile);
             system("clear");
 
@@ -96,7 +119,7 @@ int main(int argc, char const *argv[])
 
             printf("\nsuccessfully logged in...\n...DATABASE ACTION\n");
             staffLabel2:
-            printf("\n1. Enter new record/Update a record");
+            printf("\n1. Create new record(s)");
             printf("\n2. Edit a record");
             printf("\n3. Search for a record");
             printf("\n4. Delete a student record");
@@ -131,7 +154,8 @@ int main(int argc, char const *argv[])
                     printf("GRADE: ");
                     scanf("%4s", mystudents[i].mean_grade);
                     
-                    FILE *fileptr = fopen(strcat(mystudents[i].RegNo, ".dat"), "w");
+                    char *fileB = strcat(mystudents[i].RegNo, ".dat"); //declared this to prevent filename from becoming the RegNo
+                    FILE *fileptr = fopen(fileB, "w");
                     if(fileptr == NULL){
                         printf("\nError creating Record!");
                         EXIT_FAILURE;
@@ -141,17 +165,25 @@ int main(int argc, char const *argv[])
                         printf("\nError writing to Record!");
                     }
                     fclose(fileptr);
+                    printf("You have successfully created %d records", entries);
+
+                }
+                printf("\nPress any key to return to main menu: ");
+                scanf("%1s", menu_choice);
+                if (menu_choice != NULL){
+                    goto staffLabel2;
                 }
             }
             else if(staffChoice2 == 2){
                 //Edit a record
-                struct Student student;
+                //struct Student student;
                 printf("\nEdit a Student's record...\n\n");
                 printf("REG-NO: ");
                 scanf("%11s", reg);
                 strcpy(filename, reg);
             
-                FILE *pfile = fopen(strcat(filename, ".dat"), "r");
+                //FILE *pfile = fopen(strcat(filename, ".dat"), "r");
+                FILE *pfile = fopen(strcat(filename, ".dat"), "r+b");
                 if(pfile == NULL){
                     printf("\nNo student with Admission number %s is registered!", reg);
                     goto staffLabel2;
@@ -162,38 +194,51 @@ int main(int argc, char const *argv[])
                 printf("------------FULL NAME-----------REGNo-------DoB--------STREAM------------MEAN GRADE----\n");
                 printf( "%s\t       %s\t      %s\t       %s\t    %s\n", student.full_name, student.RegNo, student.DoB, student.stream, student.mean_grade);
                 fclose(pfile);
-                
-                FILE *pfile2 = fopen(strcat(filename, ".dat"), "w");
-                if(pfile2 == NULL){
-                    printf("\nNo student with Admission number %s is registered!", reg);
-                    goto staffLabel2;
-                }
 
-                fread(&student, sizeof(struct Student), 1, pfile);
+                char *delete_file = strcat(student.RegNo, ".dat");
+                remove(delete_file);
+
+                char newbirth[16], newName[30], newReg[12], newGrade[5], newStream[10];
                 printf("Type in new details..\n");
                 printf("NAME: ");
-                fgets(student.full_name, 30, stdin);
-                student.full_name[strlen(student.full_name) - 1] = '\0';
+                getchar();
+                fgets(newName, 30, stdin);
+                newName[strlen(newName) - 1] = '\0';
                 //scanf("%19s", mystudents[i].full_name);
                 printf("Date of Birth: ");
-                scanf("%15s", student.DoB);
+                scanf("%15s", newbirth);
                 printf("REG-NO: ");
-                scanf("%11s", student.RegNo);
+                scanf("%11s", newReg);
                 printf("STREAM: ");
-                scanf("%9s", student.stream);
+                scanf("%9s", newStream);
                 printf("GRADE: ");
-                scanf("%4s", student.mean_grade);
+                scanf("%4s", newGrade);
+                strcpy(student.RegNo, newReg);
+                FILE *pfile2 = fopen(strcat(student.RegNo, ".dat"), "w+b");
+                if(pfile2 == NULL){
+                    printf("\nCould not open file!");
+                    goto staffLabel2;
+                }
+                strcpy(student.full_name, newName);
+                strcpy(student.stream, newStream);
+                strcpy(student.DoB, newbirth);
+                strcpy(student.mean_grade, newGrade);
+                printf("NEXT\n");
+
                 if(fwrite(&student, sizeof(struct Student), 1, pfile2) != 1){
                     printf("Error updating %s's record", student.full_name);
                     fclose(pfile2);
                     goto staffLabel2;
                 }
+                printf("\nSuccessfully edited record of %s", student.full_name);
                 fclose(pfile2);
+
+                goto staffLabel2;
             }
             else if(staffChoice2 == 3){
                 //Search_record();
                             
-                struct Student student;
+                //struct Student student;
                 printf("\nSearch for a Student record...\n\n");
                 printf("REG-NO: ");
                 scanf("%11s", reg);
@@ -204,16 +249,22 @@ int main(int argc, char const *argv[])
                     printf("\nNo student with Admission number %s is registered!", reg);
                     goto staffLabel2;
                 }
-
                 fread(&student, sizeof(struct Student), 1, pfile);
                 printf("------------FULL NAME-----------REGNo-----------DoB--------STREAM------------MEAN GRADE----\n");
                 printf( "%s\t       %s\t      %s\t      %s\t     %s\n", student.full_name, student.RegNo, student.DoB, student.stream, student.mean_grade);
                 fclose(pfile);
+
+                printf("\nPress any key to return to main menu: ");
+                scanf("%1s", menu_choice);
+                if (menu_choice != NULL){
+                    goto staffLabel2;
+                }
+                
             }
             else if(staffChoice2 == 4){
                 //Delete_record();
                             
-                struct Student student;
+                //struct Student student;
                 printf("\nDELETE STUDENT RECORD....\n\n");
                 printf("REG-NO: ");
                 scanf("%11s", reg);
@@ -230,12 +281,17 @@ int main(int argc, char const *argv[])
                 char *delete_file = strcat(reg, ".dat");
                 char affirmation;
                 printf("\nAre you sure you want to delete %s, the record of %s?", delete_file, student.full_name);
-                printf("Y or N: ");
+                printf(" Y or N: ");
                 scanf("%s", &affirmation);
                 fclose(pfile);
                 if(affirmation == 'Y' || 'y'){
                     if(remove(delete_file) == 0)
                         printf("\nRecord of %s successfully deleted", reg);
+                        printf("\nPress any key to return to main menu: ");
+                        scanf("%1s", menu_choice);
+                        if (menu_choice != NULL){
+                            goto staffLabel2;
+                        }
                     else
                         printf("\nUnable to delete the record");
                 }
@@ -244,14 +300,14 @@ int main(int argc, char const *argv[])
                     goto staffLabel2;
                 }
             }
-            else if(staffChoice == 5){
+            else if(staffChoice2 == 5){
                 printf("\nUNDEFINED FIELD!");
                 exit(0);
             }
-            else if(staffChoice == 6){
-                goto label1;
+            else if(staffChoice2 == 6){
+                goto stafflabel;
             }
-            else if(staffChoice == 7){
+            else if(staffChoice2 == 7){
                 puts("...EXITING...");
                 exit(0);
             }
@@ -274,8 +330,7 @@ int main(int argc, char const *argv[])
         }
     }
     else if(choiceA == 2){
-        puts("...UNDEFINED FIELD...");
-        exit(0);
+        Student_function();
     }  
     else if(choiceA == 3){
         puts("...EXITING...");
@@ -286,3 +341,4 @@ int main(int argc, char const *argv[])
     }
     return 0;
 }
+

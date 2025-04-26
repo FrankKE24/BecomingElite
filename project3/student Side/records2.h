@@ -1,3 +1,6 @@
+#if !defined(records2)
+#define records2
+
 
 struct Student{
     char RegNo[12];
@@ -13,3 +16,10 @@ struct Lecturer{
     char username[17];
     char name[14];
 };
+
+struct Student student;
+struct Lecturer lec1;
+
+
+
+#endif // records2
