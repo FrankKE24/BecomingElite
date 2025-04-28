@@ -13,6 +13,7 @@ struct Student{
 
 int main(int argc, char const *argv[])
 {
+
     double principle;
     printf("Enyer ptimciple: ");
     scanf("%ld", &principle);

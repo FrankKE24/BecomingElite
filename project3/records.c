@@ -52,6 +52,7 @@ int main(int argc, char const *argv[])
         printf("\n4. Exit");
         printf("\nEnter choice: ");
         scanf("%d", &staffChoice);
+        
         system("clear");
 
         if(staffChoice == 1){
@@ -249,6 +250,7 @@ int main(int argc, char const *argv[])
                     printf("\nNo student with Admission number %s is registered!", reg);
                     goto staffLabel2;
                 }
+
                 fread(&student, sizeof(struct Student), 1, pfile);
                 printf("------------FULL NAME-----------REGNo-----------DoB--------STREAM------------MEAN GRADE----\n");
                 printf( "%s\t       %s\t      %s\t      %s\t     %s\n", student.full_name, student.RegNo, student.DoB, student.stream, student.mean_grade);
