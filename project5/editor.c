@@ -13,6 +13,7 @@ char buffer[256];
 int main(int argc, char const *argv[])
 {
     int choice;
+    puts("FILE   EDITOR");
     puts("1. TEXT File");
     puts("2. BinARY FILE");
 
@@ -29,6 +30,8 @@ int main(int argc, char const *argv[])
         
     } 
     
+    system("clear");
+
 
     if(choice == 1){
         textFileEditor();
@@ -71,167 +74,192 @@ void textFileEditor(){
     printf("Select file mode: ");
     scanf("%d", &fileChoice);
 
-    if(fileChoice == 1){
-        printf("Filename: ");
-        scanf("%19s", fileName);
+    int proceed = 1;
+    while(proceed == 1){
 
-        FILE *fileptr = fopen(strcat(fileName, ".txt"), "r");
-        if(fileptr == NULL){
-            printf("\nError opening file");
-            exit(EXIT_FAILURE);
-        }
-        while (fgets(buffer, sizeof(buffer), fileptr)){
-            printf("%s", buffer);
-        }
-
-        puts("\nEnd of File");
-        fclose(fileptr);
-
-    }
-    else if(fileChoice == 2){
-        puts("WRITE");
-        printf("Filename: ");
-        scanf("%19s", fileName);
-
-        printf("Enter the length of characters you wish to write: ");
-        scanf("%d", &length);
-        char *text = malloc((length +1) * sizeof(char));
-        printf("Entger the text: ");
-        int count = 0;
-        // Read characters one at a time
-        while (count < length) {
-            int ch = getchar(); // Read a single character
-            if (ch != '\n' || ch != EOF) { // Ignore newline characters
-                text[count++] = ch; // Store the character in the buffer
+        if(fileChoice == 1){
+            printf("Filename: ");
+            scanf("%19s", fileName);
+    
+            FILE *fileptr = fopen(strcat(fileName, ".txt"), "r");
+            if(fileptr == NULL){
+                printf("\nError opening file");
             }
+            while (fgets(buffer, sizeof(buffer), fileptr)){
+                printf("%s", buffer);
+            }
+    
+            puts("\nEnd of File");
+            fclose(fileptr);
+    
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
+    
         }
-        text[count] = '\0'; // Null-terminate the string
-
-        FILE *fileptr = fopen(strcat(fileName, ".txt"), "w");
-        if(fileptr == NULL){
-            printf("\nError opening file");
-            exit(EXIT_FAILURE);
-        }
+        else if(fileChoice == 2){
+            puts("WRITE");
+            printf("Filename: ");
+            scanf("%19s", fileName);
+    
+            printf("Enter the length of characters you wish to write: ");
+            scanf("%d", &length);
+            char *text = malloc((length +1) * sizeof(char));
+            printf("Entger the text: ");
+            int count = 0;
+            // Read characters one at a time
+            while (count < length) {
+                int ch = getchar(); // Read a single character
+                if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                    text[count++] = ch; // Store the character in the buffer
+                }
+            }
+            text[count] = '\0'; // Null-terminate the string
+    
+            FILE *fileptr = fopen(strcat(fileName, ".txt"), "w");
+            if(fileptr == NULL){
+                printf("\nError opening file");
+            }
+            
         
+            fprintf(fileptr, "%s", text);
+            puts("\nFile successfully written");
+            fclose(fileptr);
     
-        fprintf(fileptr, "%s", text);
-        puts("\nFile successfully written");
-        fclose(fileptr);
-
-    }
-    else if(fileChoice == 3){
-        printf("Enter the length of characters you wish to append: ");
-        scanf("%d", &length);
-        printf("Filename: ");
-        scanf("%19s", fileName);
-        char *text = malloc((length +1) * sizeof(char));
-        printf("Entger the text: ");
-        int count = 0;
-        // Read characters one at a time
-        while (count < length) {
-            int ch = getchar(); // Read a single character
-            if (ch != '\n' || ch != EOF) { // Ignore newline characters
-                text[count++] = ch; // Store the character in the buffer
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
+    
+        }
+        else if(fileChoice == 3){
+            printf("Enter the length of characters you wish to append: ");
+            scanf("%d", &length);
+            printf("Filename: ");
+            scanf("%19s", fileName);
+            char *text = malloc((length +1) * sizeof(char));
+            printf("Entger the text: ");
+            int count = 0;
+            // Read characters one at a time
+            while (count < length) {
+                int ch = getchar(); // Read a single character
+                if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                    text[count++] = ch; // Store the character in the buffer
+                }
             }
-        }
-        text[count] = '\0'; // Null-terminate the string
+            text[count] = '\0'; // Null-terminate the string
+        
+            FILE *file_ptr = fopen(strcat(fileName, ".txt"), "a+");
+            if(file_ptr == NULL){
+                printf("File not found\n");
+            }
+        
+            fprintf(file_ptr, "%s", text);
+            fclose(file_ptr);
+            printf("\nThis is what was appended");
+            printf("\n%s", text);
     
-        FILE *file_ptr = fopen(strcat(fileName, ".txt"), "a+");
-        if(file_ptr == NULL){
-            printf("File not found\n");
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
         }
     
-        fprintf(file_ptr, "%s", text);
-        fclose(file_ptr);
-        printf("\nThis is what was appended");
-        printf("\n%s", text);
     }
+
+    return;
 }
 
 void binaryFileEditor(){
-    puts("1. Read");
-    puts("2. Write");
-    puts("3. Append");
-    printf("Select file mode: ");
-    scanf("%d", &fileChoice);
-    if(fileChoice == 1){
-        puts("READ BINARY");
-        printf("Filename: ");
-        scanf("%19s", fileName);
-        FILE *fileptr = fopen(strcat(fileName, ".dat"), "rb");
-        if(fileptr == NULL){
-            printf("\nError opening file");
-            exit(EXIT_FAILURE);
-        }
-        fread(buffer, sizeof(buffer), 1, fileptr);
-        
-        printf("%s", buffer);
-        puts("\nEnd of File");
-        fclose(fileptr);
-    }
-    else if(fileChoice == 2){
-        puts("WRITE BINARY");
-        printf("Filename: ");
-        scanf("%19s", fileName);
-        printf("Enter the length of characters you wish to write: ");
-        scanf("%d", &length);
-        char *text = malloc((length +1) * sizeof(char));
-        printf("Entger the text: ");
-        int count = 0;
-        // Read characters one at a time
-        while (count < length) {
-            int ch = getchar(); // Read a single character
-            if (ch != '\n' || ch != EOF) { // Ignore newline characters
-                text[count++] = ch; // Store the character in the buffer
-            }
-        }
-        text[count] = '\0';
 
-        FILE *fileptr = fopen(strcat(fileName, ".dat"), "wb");
-        if(fileptr == NULL){
-            printf("\nError opening file");
-            exit(EXIT_FAILURE);
-        }
-        
-        if(fwrite(text, sizeof(text), 1, fileptr) != 1){
-            printf("Errror wrtimg to file");
-            fclose(fileptr);
-            return;
-        }
-        printf("%s", buffer);
-        puts("\nEnd of File");
-        fclose(fileptr);
-    }
-    else if(fileChoice == 2){
-        puts("APPEND BINARY");
-        printf("Filename: ");
-        scanf("%19s", fileName);
-        printf("Enter the length of characters you wish to append: ");
-        scanf("%d", &length);
-        char *text = malloc((length +1) * sizeof(char));
-        printf("Entger the text: ");
-        int count = 0;
-        // Read characters one at a time
-        while (count < length) {
-            int ch = getchar(); // Read a single character
-            if (ch != '\n' || ch != EOF) { // Ignore newline characters
-                text[count++] = ch; // Store the character in the buffer
+    int proceed = 1;
+    while(proceed == 1){
+        puts("1. Read");
+        puts("2. Write");
+        puts("3. Append");
+        printf("Select file mode: ");
+        scanf("%d", &fileChoice);
+        if(fileChoice == 1){
+            puts("READ BINARY");
+            printf("Filename: ");
+            scanf("%19s", fileName);
+            FILE *fileptr = fopen(strcat(fileName, ".dat"), "rb");
+            if(fileptr == NULL){
+                printf("\nError opening file");
             }
-        }
-        text[count] = '\0';
-        FILE *fileptr = fopen(strcat(fileName, ".dat"), "ab");
-        if(fileptr == NULL){
-            printf("\nError opening file");
-            exit(EXIT_FAILURE);
-        }
-        
-        if(fwrite(text, sizeof(text), 1, fileptr) != 1){
-            printf("Errror appending to file");
+            fread(buffer, sizeof(buffer), 1, fileptr);
+            
+            printf("%s", buffer);
+            puts("\nEnd of File");
             fclose(fileptr);
-            return;
+
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
         }
-        puts("THhis iswhatwas appended:  ");
-        printf("%s", text);
-        fclose(fileptr);
+        else if(fileChoice == 2){
+            puts("WRITE BINARY");
+            printf("Filename: ");
+            scanf("%19s", fileName);
+            printf("Enter the length of characters you wish to write: ");
+            scanf("%d", &length);
+            char *text = malloc((length +1) * sizeof(char));
+            printf("Entger the text: ");
+            int count = 0;
+            // Read characters one at a time
+            while (count < length) {
+                int ch = getchar(); // Read a single character
+                if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                    text[count++] = ch; // Store the character in the buffer
+                }
+            }
+            text[count] = '\0';
+    
+            FILE *fileptr = fopen(strcat(fileName, ".dat"), "wb");
+            if(fileptr == NULL){
+                printf("\nError opening file");
+            }
+            
+            if(fwrite(text, sizeof(text), 1, fileptr) != 1){
+                printf("Errror wrtimg to file");
+                fclose(fileptr);
+                return;
+            }
+            printf("%s", buffer);
+            puts("\nEnd of File");
+            fclose(fileptr);
+
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
+        }
+        else if(fileChoice == 2){
+            puts("APPEND BINARY");
+            printf("Filename: ");
+            scanf("%19s", fileName);
+            printf("Enter the length of characters you wish to append: ");
+            scanf("%d", &length);
+            char *text = malloc((length +1) * sizeof(char));
+            printf("Entger the text: ");
+            int count = 0;
+            // Read characters one at a time
+            while (count < length) {
+                int ch = getchar(); // Read a single character
+                if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                    text[count++] = ch; // Store the character in the buffer
+                }
+            }
+            text[count] = '\0';
+            FILE *fileptr = fopen(strcat(fileName, ".dat"), "ab");
+            if(fileptr == NULL){
+                printf("\nError opening file");
+            }
+            
+            if(fwrite(text, sizeof(text), 1, fileptr) != 1){
+                printf("Errror appending to file");
+                fclose(fileptr);
+            }
+            puts("THhis iswhatwas appended:  ");
+            printf("%s", text);
+            fclose(fileptr);
+
+            printf("Enter 1 to return to prev menu, or any other character to exit: ");
+            scanf("%d", &proceed);
+        }
     }
+ 
+    return;
 }
