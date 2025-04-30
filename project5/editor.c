@@ -149,5 +149,89 @@ void textFileEditor(){
 }
 
 void binaryFileEditor(){
+    puts("1. Read");
+    puts("2. Write");
+    puts("3. Append");
+    printf("Select file mode: ");
+    scanf("%d", &fileChoice);
+    if(fileChoice == 1){
+        puts("READ BINARY");
+        printf("Filename: ");
+        scanf("%19s", fileName);
+        FILE *fileptr = fopen(strcat(fileName, ".dat"), "rb");
+        if(fileptr == NULL){
+            printf("\nError opening file");
+            exit(EXIT_FAILURE);
+        }
+        fread(buffer, sizeof(buffer), 1, fileptr);
+        
+        printf("%s", buffer);
+        puts("\nEnd of File");
+        fclose(fileptr);
+    }
+    else if(fileChoice == 2){
+        puts("WRITE BINARY");
+        printf("Filename: ");
+        scanf("%19s", fileName);
+        printf("Enter the length of characters you wish to write: ");
+        scanf("%d", &length);
+        char *text = malloc((length +1) * sizeof(char));
+        printf("Entger the text: ");
+        int count = 0;
+        // Read characters one at a time
+        while (count < length) {
+            int ch = getchar(); // Read a single character
+            if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                text[count++] = ch; // Store the character in the buffer
+            }
+        }
+        text[count] = '\0';
 
+        FILE *fileptr = fopen(strcat(fileName, ".dat"), "wb");
+        if(fileptr == NULL){
+            printf("\nError opening file");
+            exit(EXIT_FAILURE);
+        }
+        
+        if(fwrite(text, sizeof(text), 1, fileptr) != 1){
+            printf("Errror wrtimg to file");
+            fclose(fileptr);
+            return;
+        }
+        printf("%s", buffer);
+        puts("\nEnd of File");
+        fclose(fileptr);
+    }
+    else if(fileChoice == 2){
+        puts("APPEND BINARY");
+        printf("Filename: ");
+        scanf("%19s", fileName);
+        printf("Enter the length of characters you wish to append: ");
+        scanf("%d", &length);
+        char *text = malloc((length +1) * sizeof(char));
+        printf("Entger the text: ");
+        int count = 0;
+        // Read characters one at a time
+        while (count < length) {
+            int ch = getchar(); // Read a single character
+            if (ch != '\n' || ch != EOF) { // Ignore newline characters
+                text[count++] = ch; // Store the character in the buffer
+            }
+        }
+        text[count] = '\0';
+        FILE *fileptr = fopen(strcat(fileName, ".dat"), "ab");
+        if(fileptr == NULL){
+            printf("\nError opening file");
+            exit(EXIT_FAILURE);
+        }
+        
+        if(fwrite(text, sizeof(text), 1, fileptr) != 1){
+            printf("Errror appending to file");
+            fclose(fileptr);
+            return;
+        }
+        puts("THhis iswhatwas appended:  ");
+        printf("%s", text);
+        fclose(fileptr);
+    }
 }
