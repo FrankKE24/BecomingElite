@@ -16,14 +16,18 @@ int main(int argc, char const *argv[])
     puts("1. TEXT File");
     puts("2. BinARY FILE");
 
-    do
-    {
+    while (1){
         printf("Choice: ");
-        if(scanf("%d", &choice) != 1 || choice <= 0){
-            printf("\nInvalid input. Please enter a positive integer: ");
+        if(scanf("%d", &choice) == 1 && choice > 0){
+            break;
         }    
-        getchar();
-    } while (scanf("%d", &choice) != 1 || choice <= 0);
+        else{
+            printf("Invalid input. Please enter a positive integer: ");
+        }
+        while (getchar() != '\n');
+        //getchar();
+        
+    } 
     
 
     if(choice == 1){
@@ -37,6 +41,28 @@ int main(int argc, char const *argv[])
     }
     return 0;
 }
+
+/*
+getchar() Reads One Character at a Time:
+
+The getchar() function reads one character from the input 
+buffer (e.g., the text you typed at the keyboard).
+Check if the Character is Not a Newline ('\n):
+
+The condition getchar() != '\n' checks if the character read 
+is not the newline character ('\n), which is added when you press the "Enter" key.
+Keep Reading Until a Newline is Found:
+
+The loop keeps calling getchar() and discarding characters one
+ by one until it reaches the newline character ('\n).
+Once the newline is found, the loop stops.
+Purpose: Clear the Input Buffer:
+
+This is often used to "flush" or clear leftover characters from 
+the input buffer when invalid or extra input is provided. For example:
+If you expect the user to type a number but they type abc instead, 
+this loop will discard all the characters (a, b, c) and the newline (\n) 
+so the input buffer is clean for the next input.*/
 
 void textFileEditor(){
     puts("1. Read");
