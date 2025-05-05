@@ -1,4 +1,4 @@
-Programmable Logic Controllers (PLCs) are typically programmed using specialized languages designed for automation and industrial control systems. The most common languages used to program PLCs are defined by the IEC 61131-3 standard. These languages include:
+Hallo, World!, today is Wednesday.s) are typically programmed using specialized languages designed for automation and industrial control systems. The most common languages used to program PLCs are defined by the IEC 61131-3 standard. These languages include:
 
 1. **Ladder Logic (Ladder Diagram - LD):** 
    - A graphical programming language resembling electrical relay logic diagrams.

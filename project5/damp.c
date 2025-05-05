@@ -6,11 +6,11 @@
 int main(int argc, char const *argv[])
 {
     char fileName[20];
-    char buffer[256] =  {0}; // Initialize buffer to ensure it's null-terminated;
+    char buffer[30] =  {0}; // Initialize buffer to ensure it's null-terminated;
     puts("READ BINARY");
     printf("Filename: ");
     scanf("%19s", fileName);
-    FILE *fileptr = fopen(strcat(fileName, ".dat"), "rb");
+    FILE *fileptr = fopen(strcat(fileName, ".txt"), "r");
     if(fileptr == NULL){
         printf("\nError opening file");
         return EXIT_FAILURE;
@@ -20,6 +20,10 @@ int main(int argc, char const *argv[])
         fclose(fileptr);
         return 1;      
     }
+
+    /*while (fgets(buffer, sizeof(buffer), fileptr)){
+        printf("%s", buffer);
+    }*/
     
     printf("%s", buffer);
     puts("\nEnd of File");

@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
         printf("\n-------------BANKING Platform--------------\n");
         printf("\n1. Create Account");
         printf("\n2. Log in to your Banker's Account");
-        printf("\n4. Exit");
+        printf("\n3. Exit");
         printf("\n\nEnter your Choice: ");
         //scanf("%d", &choiceA);
         if (scanf("%d", &choiceA) != 1) {
@@ -36,6 +36,7 @@ int main(int argc, char const *argv[])
             while (getchar() != '\n') // Clear input buffer
                 continue;
         }
+        getchar();
 
         system("clear");
 
@@ -64,13 +65,14 @@ int main(int argc, char const *argv[])
 
             if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) != 1){
                 printf("Error!");
+                fclose(fileptr);
                 break;
                 //goto label1;
             }
             fclose(fileptr);
 
             puts("\nYour account has been successfully created!");
-            puts("Logging you out...");
+            puts("Logging you out...\n\n");
             break;
             //goto label1;
         }
@@ -79,6 +81,7 @@ int main(int argc, char const *argv[])
             printf("\nLogin to your Banker's personal Account");
             printf("\nID  NUmber: ");
             scanf("%8s", ID);
+            getchar();
             printf("Password: ");
             scanf("%14s", pwd);
             strcpy(filename, ID);
@@ -90,7 +93,11 @@ int main(int argc, char const *argv[])
                 //goto label1;
             }
             
-            fread(&banker, sizeof(struct Banker), 1, fileptr);
+            if(fread(&banker, sizeof(struct Banker), 1, fileptr) != 1){
+                printf("\nError reading login file\n");
+                fclose(fileptr);
+                break;
+            }
             fclose(fileptr);
             
             int attempts = 0;
@@ -128,6 +135,7 @@ int main(int argc, char const *argv[])
                 puts("7. EXIT");
                 printf("\nEnter your choice: ");
                 scanf("%d", &choiceB);
+                getchar();
 
                 system("clear");
 
@@ -135,31 +143,30 @@ int main(int argc, char const *argv[])
                 if (choiceB == 1)
                 {
                     printf("\nYour current balance is Kshs%.2lf", banker.Account_Balance);
-                    printf("\nEnter amount to deposit: Kshs ");
+                    printf("\nEnter amount to deposit: Kshs. ");
                     scanf("%lf", &deposit_Amount);
+                    getchar();
                     banker.Account_Balance += deposit_Amount;
 
-                    fileptr = fopen(filename, "rb+");
+                    fileptr = fopen(filename, "w");
                     if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) != 1){
-                        printf("Error!");
-                        //break;
-                        //goto label1;
+                        printf("Error making deposit!");
+                        fclose(fileptr);
+                        continue;
                     }
-                    printf("\nYou have successsfully deposited Kshs%.2lf", deposit_Amount);
+                    printf("\nYou have successsfully deposited Kshs%.2lf\n", deposit_Amount);
                     fclose(fileptr);
-                    //goto label2;
                 }
                 else if(choiceB == 2){
                     puts(">>>Check BALANCE");
-                    printf("Your current account balance is %.2lf", banker.Account_Balance);
+                    printf("\nYour current account balance is %.2lf\n", banker.Account_Balance);
                     sleep(2);
-                    //fclose(fileptr);
-                    //goto label2;
                 }
                 else if(choiceB == 3){
                     puts("<<<<<WITHDRAW>>>>");
                     printf("Enter amount to Withdraw: ");
                     scanf("%lf", &withdraw_Amount);
+                    getchar();
 
                     do
                     {
@@ -171,14 +178,17 @@ int main(int argc, char const *argv[])
                             scanf("%lf", &withdraw_Amount);
             
                         }            
+                        while(getchar() != '\n');
+
                     } while (withdraw_Amount > banker.Account_Balance);
                     system("clear");
 
-
+                    fileptr = fopen(filename, "w");
                     banker.Account_Balance -= withdraw_Amount;
-                    fileptr = fopen(filename, "rb+");
                     if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) != 1){
-                        printf("Error!");
+                        printf("\nError in withdrawal!\n");
+                        fclose(fileptr);
+                        continue;
                     }
 
                     printf("\nYou have  successfully withdrawn %lf", withdraw_Amount);
@@ -194,19 +204,22 @@ int main(int argc, char const *argv[])
                     puts("<<<Send Money>>>");
                     printf("ID number of receiver: ");
                     scanf("%8s", receiverID);
-                    //strcpy(filename, receiverID);
+                    printf("Enter amount to send: ");
+                    scanf("%lf", &send_amount);
+                    strcpy(filename, receiverID);
 
-                    fileptr = fopen(strcat(receiverID, ".dat"), "r");
+                    fileptr = fopen(strcat(filename, ".dat"), "r");
                     if(fileptr == NULL){
                         printf("\nUser %s is not registered with our Banking service ", receiverID);
-                        //break;
+                        continue;
                         //goto label2;
                     }
-                    //fread(&receiver, sizeof(struct Banker), 1, fileptr);
+                    if(fread(&receiver, sizeof(struct Banker), 1, fileptr) != 1){
+                        printf("\nError reading receiver's file\n");
+                        fclose(fileptr);
+                        continue;
+                    }
                     fclose(fileptr);
-            
-                    printf("\nEnter amount to send: ");
-                    scanf("%lf", &send_amount);
                     
                     do
                     {
@@ -217,31 +230,33 @@ int main(int argc, char const *argv[])
                             printf("Enter amount to send: ");
                             scanf("%lf", &send_amount);
             
-                        }            
+                        }   
+                        while(getchar() != '\n');
+         
                     } while (send_amount > banker.Account_Balance);
                     system("clear");
 
-                    fileptr = fopen(strcat(receiverID, ".dat"), "rb+");
-                    puts("BREAAK");
-                    fread(&receiver, sizeof(struct Banker), 1, fileptr);
-                    fflush(stdout);
-                    receiver.Account_Balance += send_amount;
-                    if(fwrite(&receiver, sizeof(struct Banker), 1, fileptr) !=1){
-                        puts("Error in Transaction");
-                    }
-                    puts("bREAK 1");
-                    fclose(fileptr);
-                    printf("\nYou have successfully sent %lf to %s", send_amount, receiver.name);
 
-                    //strcpy(filename, banker.ID_Number);
-                    fileptr = fopen(strcat(banker.ID_Number, ".dat"), "rb+");
-                    fread(&banker, sizeof(struct Banker), 1, fileptr);
-                    banker.Account_Balance -= send_amount;
-                    if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) !=1){
-                        puts("Error updating Balance");
+                    //printf("name>>>%s\n", filename);
+                    fileptr = fopen(filename, "w");
+                    receiver.Account_Balance += send_amount;
+                    if(fwrite(&receiver, sizeof(struct Banker), 1, fileptr) != 1){
+                        printf("\nError perfoming transaction\n");
+                        fclose(fileptr);
+                        continue;
                     }
-                    printf("\nCurrent balance is %lf", banker.Account_Balance);
+                    printf("Transaction successfull\n");
                     fclose(fileptr);
+
+                    strcpy(filename, banker.ID_Number);
+                    fileptr = fopen(strcat(filename, ".dat"), "w");
+                    banker.Account_Balance -= send_amount;
+                    if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) != 1){
+                        printf("\nError transaction\n");
+                        fclose(fileptr);
+                    }
+                    fclose(fileptr); // 45249279.00
+                    continue;
 
                 }
                 else if(choiceB == 5){
@@ -253,11 +268,11 @@ int main(int argc, char const *argv[])
 
                     while (strcmp(banker.password, newPWD) !=0)
                     {
-                        if(strcmp(banker.password, newPWD) !=0){
-                            printf("\nWRONG PASSWORD!\n...try again..\n");
-                            printf("\nEnter current password: ");
-                            scanf("%14s", newPWD);
-                        }                    
+                        //if(strcmp(banker.password, newPWD) !=0){
+                        printf("\nWRONG PASSWORD!\n...try again..\n");
+                        printf("\nEnter current password: ");
+                        scanf("%14s", newPWD);
+                        //}                    
                     }
  
                     puts("These are your current details: ");
@@ -266,7 +281,7 @@ int main(int argc, char const *argv[])
                     printf("\n%s", banker.phone_Number);
                     printf("\n%s", banker.password);
                     
-                    fileptr = fopen(strcat(banker.ID_Number, ".dat"), "rb+");
+                    fileptr = fopen(strcat(banker.ID_Number, ".dat"), "w");
                     if(fileptr == NULL){
                         printf("\nERROR");
                         exit(EXIT_FAILURE);
@@ -290,20 +305,18 @@ int main(int argc, char const *argv[])
                     strcpy(banker.ID_Number, newID);
 
                     if(fwrite(&banker, sizeof(struct Banker), 1, fileptr) != 1){
-                        printf("Error!");
-                        exit(EXIT_FAILURE);
-                        //goto label1;
+                        printf("Error updating details!");
+                        fclose(fileptr);
+                        continue;
                     }
                     fclose(fileptr);
             
                     puts("\nYour account details have been successfully changed!");
                     puts("Logging you out...");
                     exit(0);
-                    //goto label1;
                 }
                 else if(choiceB == 6){
                     break;
-                    //goto label1;
                 }
                 else if(choiceB == 7){
                     //fclose(fileptr);
@@ -315,11 +328,10 @@ int main(int argc, char const *argv[])
                 }
     
             }while (1);
-            //fclose(fileptr);
 
             
         } 
-        else if(choiceA == 4){
+        else if(choiceA == 3){
             exit(0);
         }
         else{

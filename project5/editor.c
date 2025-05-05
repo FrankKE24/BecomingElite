@@ -226,13 +226,14 @@ void binaryFileEditor(){
             scanf("%19s", fileName);
             FILE *fileptr = fopen(strcat(fileName, ".dat"), "rb");
             if(fileptr == NULL){
-                printf("\nError opening file");
-                break;
+                printf("\nError opening file\n");
+                continue;
             }
-            if(fread(buffer, sizeof(buffer)- 1, 1, fileptr)){
-                printf("\nError reasding file\n");
+            if(fread(buffer, sizeof(buffer)- 1, 1, fileptr) != 1){
+                printf("\nError reading file\n");
                 fclose(fileptr);
-                break;
+                continue;
+                //break;
             }
             
             printf("%s", buffer);
