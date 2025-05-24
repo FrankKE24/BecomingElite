@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
             break;
         }    
         else{
-            printf("Invalid input. Please enter a positive integer: ");
+            puts("Invalid input. Please enter a positive integer");
         }
         while (getchar() != '\n');
         //getchar();

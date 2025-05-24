@@ -5,6 +5,9 @@ void swap(int *x, int *y){
     *x = *y;
     *y = temp;
 }
+///M0857HD5BC3K05W2
+
+//QuickSort for large datasets, BubbleSort for simplicity).
 
 int partition(int arr[], int low, int high){
     int pivot = arr[high];

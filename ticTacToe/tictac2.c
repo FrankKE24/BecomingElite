@@ -4,6 +4,14 @@
 #include <time.h>
 #include <ctype.h>
 
+#define COLOR_RED "\x1b[31m"
+#define COLOR_GREEN "\x1b[32m"
+#define COLOR_YELLOW "\x1b[33m"
+#define COLOR_BLUE "\x1b[34m"
+#define COLOR_MAGENTA "\x1b[35m"
+#define COLOR_CYAN "\x1b[36m"
+#define COLOR_RESET "\x1b[0m"
+
 char board[3][3];
 const char PLAYER = '$';
 const char COMP = 'O';
@@ -35,7 +43,10 @@ int main(int argc, char const *argv[])
                 break;
             }
     
+            printf(COLOR_MAGENTA);
             computerMove();
+            printf(COLOR_RESET);
+
             winner = checkWinner();
             if(winner != ' ' || checkFreeSpaces() == 0){
                 break;
@@ -44,6 +55,7 @@ int main(int argc, char const *argv[])
 
         }
         
+        printf(COLOR_GREEN);
         printBoard();
         printWinner(winner);
         printf("Do you wish to play again..(Y/N): ");
@@ -101,11 +113,14 @@ void playerMove(){
 
     do
     {
-        printf("Enter row number #x(1-3): ");
+        printf(COLOR_BLUE "Enter row number #x(1-3): ");
         scanf("%d", &x);
+        printf(COLOR_RESET);
         x--;
-        printf("Enter column number #y(1-3): ");
+        printf(COLOR_BLUE "Enter column number #y(1-3): ");
         scanf("%d", &y);
+        printf(COLOR_RESET);
+
         y--;
     
         if (checkFreeSpaces() != 0)
@@ -148,6 +163,7 @@ char checkWinner(){
     for (int i = 0; i < 3; i++)
     {
         if(board[i][0] == board[i][1] && board[i][0] == board[i][2]){
+            //printf(COLOR_GREEN);
             return board[i][0];
         }
     }
@@ -155,15 +171,18 @@ char checkWinner(){
     for (int i = 0; i < 3; i++)
     {
         if(board[0][i] == board[1][i] && board[0][i] == board[2][i]){
+            //printf(COLOR_GREEN);
             return board[0][i];
         }
     }
 
     //check diagonals
     if(board[0][0] == board[1][1] && board[0][0] == board[2][2]){
+        //printf(COLOR_GREEN);
         return board[0][0];
     }
     if(board[0][2] == board[1][1] && board[0][2] == board[2][0]){
+        //printf(COLOR_GREEN);
         return board[2][0];
     }
     
@@ -172,10 +191,10 @@ char checkWinner(){
 
 void printWinner(char winner){
     if(winner == PLAYER){
-        puts("YOU WIN");
+        puts(COLOR_GREEN  "YOU WIN" COLOR_RESET);
     }
     else if(winner == COMP){
-        puts("YOU LOSE");
+        puts(COLOR_RED "YOU LOSE" COLOR_RESET);
     }
     else{
         puts("ITS A TIE!");

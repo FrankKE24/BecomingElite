@@ -27,14 +27,12 @@ int main(int argc, char const *argv[])
     }
 
     int insert_values[4];
-    for (int i = 0; i < 4; i++)
-    {               
-        printf("Enter 4 values to insert in the tree: ");
+    printf("Enter 4 values to insert in the tree: ");
+    for (int i = 0; i < 4; i++){               
         scanf("%d", &insert_values[i]);
         getchar();
     }
-    for (int i = 0; i < 4; i++)
-    {               
+    for (int i = 0; i < 4; i++){               
         tsearch(&insert_values[i], &root, compare);
 
     }

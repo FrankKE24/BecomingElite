@@ -17,8 +17,7 @@ int main(int argc, char const *argv[])
 
     int state = __freading(pfile);
 
-    if (state== 0)
-    {
+    if (state== 0){
         printf("File was not last read from");
     }
 
@@ -27,9 +26,7 @@ int main(int argc, char const *argv[])
     }
     char buffer[100];
 
-
-    while (fgets(buffer, 100, pfile))
-    {
+    while (fgets(buffer, 100, pfile)){
         printf("%s", buffer);
     }
 
