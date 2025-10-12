@@ -1,0 +1,1 @@
+A simple short message service demonstrating sockets- client sever communication

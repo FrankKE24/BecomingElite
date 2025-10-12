@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
     int addrlen = sizeof(server);
     int opt = 1;
 
-    
+
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) == 0){
         perror("SOcket creation failed!");
         return -1;
@@ -56,7 +56,7 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    char buffer[20];
+    char buffer[100];
     char *server_mssg = "Hallo from server";
     printf("Message received: ");
     recv(new_sock, buffer, sizeof(buffer), 0);
@@ -66,15 +66,16 @@ int main(int argc, char const *argv[])
 
     while (1)
     {     
-        char reply[16];
+        char reply[100];
         printf("Message received: ");
         recv(new_sock, reply, sizeof(reply), 0);
         printf("%s\n", reply);
-        char reply2[16];
+        char reply2[100];
 
         ///send(new_sock, server_mssg, strlen(server_mssg), 0);
         printf("Response: "); 
-        scanf("%15s", reply2);
+        scanf("%100s", reply2);
+        while(getchar() != '\n');
         send(new_sock, reply2, strlen(reply2), 0);
 
     }

@@ -31,23 +31,24 @@ int main(int argc, char const *argv[])
         return -1;
     }
     char *client_mssg = "Hallo from client";
-    char buffer[20];
+    char buffer[100];
     size_t send_message, recieved_mssg;
     send_message = send(sock, client_mssg, strlen(client_mssg), 0);
     printf("Message from client sent\n");
 
-    printf("Received meassage: ");
+    printf("Received message: ");
     recieved_mssg = recv(sock, buffer, sizeof(buffer), 0);
     printf("%s\n", buffer);
     while (1)
     {
-        char response[16];
+        char response[100]; //  Your reply cant be more than 100 characters long
         printf("Response: ");
-        scanf("%15s", response);
+        scanf("%100s", response);
+        while(getchar () != '\n');
         send_message = send(sock, response, strlen(response), 0);
         printf("Reply sent\n");
     
-        char response2[16];
+        char response2[100];
         printf("Received message: ");
         recieved_mssg = recv(sock, response2, sizeof(response2), 0);
         printf("%s\n", response2);
